@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PanDJ — $PANDROP | Drop the bamboo, drop the bass</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #a832ff;
+  --secondary: #39ff14;
+  --bg-start: #07000d;
+  --bg-end: #110a2e;
+  --glow: rgba(168, 50, 255, 0.75);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body.night-mode {
+  --bg-start: #000000;
+  --bg-end: #000000;
+  background: #000;
+}
+
+body.night-mode .glitch-text {
+  animation: glitchRhythm 0.5s infinite;
+}
+
+body.night-mode .glow-element {
+  filter: brightness(2) saturate(2);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes textGlow {
+  0%, 100% { text-shadow: 0 0 20px var(--glow); }
+  50% { text-shadow: 0 0 60px var(--glow), 0 0 100px var(--glow); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 20px var(--glow); }
+  50% { box-shadow: 0 0 50px var(--glow), 0 0 100px var(--glow); }
+}
+
+@keyframes pulsating {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  25% { transform: scale(1.05); opacity: 0.9; }
+  50% { transform: scale(0.95); opacity: 1; }
+  75% { transform: scale(1.03); opacity: 0.95; }
+}
+
+@keyframes glitchRhythm {
+  0% { transform: translate(0); }
+  10% { transform: translate(-2px, 1px); }
+  20% { transform: translate(2px, -1px); text-shadow: 2px 0 #39ff14, -2px 0 #a832ff; }
+  30% { transform: translate(-1px, 2px); }
+  40% { transform: translate(1px, -2px); text-shadow: -2px 0 #39ff14, 2px 0 #a832ff; }
+  50% { transform: translate(0); text-shadow: none; }
+  100% { transform: translate(0); }
+}
+
+@keyframes eqBar {
+  0%, 100% { height: 10%; }
+  25% { height: 80%; }
+  50% { height: 30%; }
+  75% { height: 90%; }
+}
+
+@keyframes bambooSway {
+  0%, 100% { transform: rotate(0deg) scaleY(1); }
+  25% { transform: rotate(1deg) scaleY(1.02); }
+  50% { transform: rotate(-1deg) scaleY(0.98); }
+  75% { transform: rotate(0.5deg) scaleY(1.01); }
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes typewriterCursor {
+  0%, 100% { border-color: var(--secondary); }
+  50% { border-color: transparent; }
+}
+
+@keyframes rotateChart {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Canvas */
+#particleCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#eqCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+/* Bamboo bg */
+.bamboo-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bamboo-stalk {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to top, rgba(57, 255, 20, 0.15), rgba(57, 255, 20, 0.02));
+  border-radius: 3px;
+  animation: bambooSway 4s ease-in-out infinite;
+}
+
+.bamboo-stalk::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: rgba(57, 255, 20, 0.3);
+  border-radius: 50%;
+}
+
+.bamboo-stalk:nth-child(1) { left: 3%; height: 60vh; animation-delay: 0s; }
+.bamboo-stalk:nth-child(2) { left: 8%; height: 80vh; animation-delay: 0.5s; }
+.bamboo-stalk:nth-child(3) { left: 15%; height: 45vh; animation-delay: 1s; }
+.bamboo-stalk:nth-child(4) { right: 5%; height: 70vh; animation-delay: 0.3s; }
+.bamboo-stalk:nth-child(5) { right: 10%; height: 55vh; animation-delay: 0.8s; }
+.bamboo-stalk:nth-child(6) { right: 18%; height: 85vh; animation-delay: 1.2s; }
+.bamboo-stalk:nth-child(7) { left: 25%; height: 40vh; animation-delay: 0.6s; }
+.bamboo-stalk:nth-child(8) { right: 25%; height: 50vh; animation-delay: 1.5s; }
+
+.bamboo-node {
+  position: absolute;
+  width: 10px;
+  left: -2px;
+  height: 4px;
+  background: rgba(57, 255, 20, 0.25);
+  border-radius: 2px;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(7, 0, 13, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(168, 50, 255, 0.2);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  transition: all 0.3s;
+}
+
+.nav-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: var(--primary);
+  text-shadow: 0 0 15px var(--glow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-logo span {
+  color: var(--secondary);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: var(--secondary);
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.nav-buy-btn {
+  background: linear-gradient(135deg, var(--primary), #7b1fa2);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  animation: btnPulse 2s infinite;
+  transition: transform 0.3s;
+  text-decoration: none;
+}
+
+.nav-buy-btn:hover {
+  transform: scale(1.05);
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+
+.nav-hamburger span {
+  width: 28px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  padding: 100px 1rem 2rem;
+}
+
+.mascot-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.mascot {
+  font-size: 8rem;
+  animation: float 3s ease-in-out infinite;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+  filter: drop-shadow(0 0 30px var(--glow));
+  transition: filter 0.3s;
+}
+
+body.night-mode .mascot {
+  filter: drop-shadow(0 0 60px var(--glow)) drop-shadow(0 0 120px rgba(57, 255, 20, 0.5));
+}
+
+.mascot-headphones {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem;
+  z-index: 6;
+  cursor: pointer;
+  transition: all 0.3s;
+  filter: drop-shadow(0 0 15px rgba(57, 255, 20, 0.5));
+}
+
+.mascot-headphones:hover {
+  transform: translateX(-50%) scale(1.2);
+  filter: drop-shadow(0 0 30px rgba(57, 255, 20, 1));
+}
+
+.bass-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  animation: ringPulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.bass-ring:nth-child(2) { animation-delay: 0.5s; width: 150px; height: 150px; }
+.bass-ring:nth-child(3) { animation-delay: 1s; width: 200px; height: 200px; }
+.bass-ring:nth-child(4) { animation-delay: 1.5s; width: 250px; height: 250px; }
+
+.hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--primary));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s infinite;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.typewriter-container {
+  height: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typewriter {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: var(--secondary);
+  border-right: 3px solid var(--secondary);
+  animation: typewriterCursor 0.7s infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #7b1fa2);
+  color: #fff;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  animation: btnPulse 2s infinite;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover { transform: scale(1.08); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--secondary);
+  border: 2px solid var(--secondary);
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: rgba(57, 255, 20, 0.1);
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.3);
+  transform: scale(1.08);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-outline:hover {
+  background: rgba(168, 50, 255, 0.1);
+  box-shadow: 0 0 30px var(--glow);
+  transform: scale(1.08);
+}
+
+.ca-container {
+  background: rgba(168, 50, 255, 0.1);
+  border: 1px solid rgba(168, 50, 255, 0.3);
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  max-width: 500px;
+  backdrop-filter: blur(10px);
+}
+
+.ca-container:hover {
+  border-color: var(--secondary);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+}
+
+.ca-label {
+  color: var(--primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ca-address {
+  color: rgba(255,255,255,0.7);
+  font-family: monospace;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ca-copy-icon {
+  color: var(--secondary);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.ca-copied {
+  color: var(--secondary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* EQ bars around mascot */
+.eq-container {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 40px;
+}
+
+.eq-bar {
+  width: 5px;
+  background: linear-gradient(to top, var(--primary), var(--secondary));
+  border-radius: 3px;
+  animation: eqBar 0.8s ease-in-out infinite;
+}
+
+.eq-bar:nth-child(1) { animation-delay: 0s; height: 30%; }
+.eq-bar:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+.eq-bar:nth-child(3) { animation-delay: 0.2s; height: 40%; }
+.eq-bar:nth-child(4) { animation-delay: 0.15s; height: 80%; }
+.eq-bar:nth-child(5) { animation-delay: 0.25s; height: 50%; }
+.eq-bar:nth-child(6) { animation-delay: 0.05s; height: 70%; }
+.eq-bar:nth-child(7) { animation-delay: 0.3s; height: 35%; }
+.eq-bar:nth-child(8) { animation-delay: 0.12s; height: 90%; }
+.eq-bar:nth-child(9) { animation-delay: 0.22s; height: 45%; }
+.eq-bar:nth-child(10) { animation-delay: 0.18s; height: 65%; }
+
+/* SECTIONS general */
+section {
+  position: relative;
+  z-index: 2;
+  padding: 5rem 1rem;
+}
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.stat-card {
+  background: rgba(168, 50, 255, 0.08);
+  border: 1px solid rgba(168, 50, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: all 0.3s;
+  animation: pulsating 4s ease-in-out infinite;
+}
+
+.stat-card:nth-child(2) { animation-delay: 0.5s; }
+.stat-card:nth-child(3) { animation-delay: 1s; }
+
+.stat-card:hover {
+  border-color: var(--secondary);
+  box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--secondary);
+  text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* ABOUT */
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.about-card {
+  background: rgba(168, 50, 255, 0.06);
+  border: 1px solid rgba(168, 50, 255, 0.15);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.about-card:hover::before { transform: scaleX(1); }
+
+.about-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 40px rgba(168, 50, 255, 0.15);
+  transform: translateY(-8px);
+}
+
+.about-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.about-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 0.8rem;
+}
+
+.about-card p {
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* TOKENOMICS */
+.tokenomics-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.chart-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+}
+
+.donut-chart {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--primary) 0deg 144deg,
+    var(--secondary) 144deg 252deg,
+    #ff6b35 252deg 324deg,
+    #00d4ff 324deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 40px var(--glow);
+  animation: pulsating 4s ease-in-out infinite;
+}
+
+.donut-chart::after {
+  content: '🐼';
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background: var(--bg-start);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.token-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.token-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.05rem;
+}
+
+.token-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.token-list li span {
+  color: rgba(255,255,255,0.8);
+}
+
+.token-list li strong {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+}
+
+/* ROADMAP */
+.roadmap-timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+.roadmap-item {
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 3rem;
+}
+
+.roadmap-dot {
+  position: absolute;
+  left: 20px;
+  top: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  background: var(--bg-start);
+  z-index: 2;
+}
+
+.roadmap-item.done .roadmap-dot {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+}
+
+.roadmap-item.active .roadmap-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px var(--glow);
+  animation: pulsating 2s infinite;
+}
+
+.roadmap-phase {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.roadmap-item.done .roadmap-phase { color: var(--secondary); }
+
+.roadmap-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.8rem;
+}
+
+.roadmap-list {
+  list-style: none;
+}
+
+.roadmap-list li {
+  color: rgba(255,255,255,0.7);
+  padding: 0.4rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  font-size: 0.95rem;
+}
+
+.roadmap-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+}
+
+.roadmap-item.done .roadmap-list li::before {
+  content: '✓';
+  color: var(--secondary);
+}
+
+.roadmap-status {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+.status-done {
+  background: rgba(57, 255, 20, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+.status-active {
+  background: rgba(168, 50, 255, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(168, 50, 255, 0.3);
+  animation: pulsating 2s infinite;
+}
+
+.status-upcoming {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* HOW TO BUY */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.step-card {
+  background: rgba(168, 50, 255, 0.06);
+  border: 1px solid rgba(168, 50, 255, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.step-card:hover {
+  border-color: var(--secondary);
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.1);
+}
+
+.step-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  opacity: 0.3;
+  margin-bottom: 0.5rem;
+}
+
+.step-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.step-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 0.8rem;
+}
+
+.step-card p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* GAME */
+.game-section {
+  text-align: center;
+}
+
+.game-area {
+  background: rgba(168, 50, 255, 0.08);
+  border: 2px solid rgba(168, 50, 255, 0.3);
+  border-radius: 30px;
+  padding: 3rem 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(15px);
+}
+
+.game-mascot {
+  font-size: 6rem;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s;
+  display: inline-block;
+  filter: drop-shadow(0 0 20px var(--glow));
+}
+
+.game-mascot:active {
+  transform: scale(0.9);
+}
+
+.game-score {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--secondary);
+  margin-top: 1rem;
+  text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+}
+
+.game-level {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin-top: 0.5rem;
+}
+
+.game-float {
+  position: absolute;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  color: var(--secondary);
+  font-size: 1.2rem;
+  pointer-events: none;
+  animation: popUp 0.8s forwards;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.game-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.game-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 4px;
+  transition: width 0.3s;
+  box-shadow: 0 0 10px var(--glow);
+}
+
+/* COMMUNITY */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.community-card {
+  background: rgba(168, 50, 255, 0.06);
+  border: 1px solid rgba(168, 50, 255, 0.15);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.4s;
+}
+
+.community-card:hover {
+  border-color: var(--secondary);
+  transform: translateY(-8px);
+  box-shadow: 0 0 40px rgba(57, 255, 20, 0.15);
+}
+
+.community-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.community-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 0.8rem;
+}
+
+.community-card p {
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.community-btn {
+  display: inline-block;
+  padding: 10px 28px;
+  border-radius: 25px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.3s;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), #7b1fa2);
+}
+
+.community-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--glow);
+}
+
+/* FOOTER */
+.footer {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  border-top: 1px solid rgba(168, 50, 255, 0.15);
+}
+
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.footer p {
+  color: rgba(255,255,255,0.3);
+  font-size: 0.8rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.footer-disclaimer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 50, 50, 0.05);
+  border: 1px solid rgba(255, 50, 50, 0.1);
+  border-radius: 10px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sound wave visual */
+.sound-wave-section {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.sw-bar {
+  width: 4px;
+  background: linear-gradient(to top, var(--primary), var(--secondary));
+  border-radius: 2px;
+  animation: eqBar 1s ease-in-out infinite;
+}
+
+/* UI hover bass indicator */
+.bass-hover {
+  position: relative;
+}
+
+.bass-hover::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.bass-hover:hover::after {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  
+  .nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: rgba(7, 0, 13, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 2rem;
+    gap: 1.5rem;
+    border-bottom: 1px solid rgba(168, 50, 255, 0.2);
+  }
+  
+  .mascot { font-size: 5rem; }
+  .tokenomics-wrapper { flex-direction: column; }
+  .roadmap-timeline::before { left: 15px; }
+  .roadmap-item { padding-left: 55px; }
+  .roadmap-dot { left: 5px; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary, .btn-outline { width: 100%; max-width: 280px; justify-content: center; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-start); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+
+/* Night mode extras */
+body.night-mode .bamboo-stalk {
+  background: linear-gradient(to top, rgba(57, 255, 20, 0.4), rgba(57, 255, 20, 0.05));
+}
+
+body.night-mode .stat-card,
+body.night-mode .about-card,
+body.night-mode .step-card,
+body.night-mode .community-card,
+body.night-mode .game-area {
+  border-color: rgba(168, 50, 255, 0.5);
+  box-shadow: 0 0 20px rgba(168, 50, 255, 0.1);
+}
+
+body.night-mode .section-title {
+  animation: glitchRhythm 3s infinite;
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Canvas -->
+<canvas id="particleCanvas"></canvas>
+<!-- EQ Canvas -->
+<canvas id="eqCanvas"></canvas>
+
+<!-- Bamboo Background -->
+<div class="bamboo-bg" id="bambooBg">
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:20%"></div><div class="bamboo-node" style="top:45%"></div><div class="bamboo-node" style="top:70%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:15%"></div><div class="bamboo-node" style="top:40%"></div><div class="bamboo-node" style="top:65%"></div><div class="bamboo-node" style="top:85%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:25%"></div><div class="bamboo-node" style="top:55%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:18%"></div><div class="bamboo-node" style="top:50%"></div><div class="bamboo-node" style="top:78%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:30%"></div><div class="bamboo-node" style="top:60%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:12%"></div><div class="bamboo-node" style="top:38%"></div><div class="bamboo-node" style="top:62%"></div><div class="bamboo-node" style="top:88%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:22%"></div><div class="bamboo-node" style="top:52%"></div></div>
+  <div class="bamboo-stalk"><div class="bamboo-node" style="top:16%"></div><div class="bamboo-node" style="top:42%"></div><div class="bamboo-node" style="top:72%"></div></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    🐼 <span>$PANDROP</span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#tokenomics">Tokenomics</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#howtobuy">Buy</a></li>
+    <li><a href="#game">Game</a></li>
+    <li><a href="#community">Community</a></li>
+  </ul>
+  <a href="#howtobuy" class="nav-buy-btn bass-hover">BUY $PANDROP</a>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="mascot-container">
+    <div class="bass-ring"></div>
+    <div class="bass-ring"></div>
+    <div class="bass-ring"></div>
+    <div class="mascot-headphones" id="headphones" title="Click for Night Set mode 🌙">🎧</div>
+    <div class="mascot" id="heroMascot">🐼</div>
+    <div class="eq-container">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+  </div>
+  
+  <h1 class="glitch-text glow-element">PanDJ</h1>
+  
+  <div class="typewriter-container">
+    <div class="typewriter" id="typewriter"></div>
+  </div>
+  
+  <div class="hero-buttons">
+    <a href="#howtobuy" class="btn-primary bass-hover">🚀 Buy $PANDROP</a>
+    <a href="#about" class="btn-secondary bass-hover">🎵 Explore</a>
+    <a href="#game" class="btn-outline bass-hover">🎮 Play Game</a>
+  </div>
+  
+  <div class="ca-container bass-hover" id="caContainer" onclick="copyCA()">
+    <span class="ca-label">CA:</span>
+    <span class="ca-address" id="caAddress">PANDROP...420x69BamBoo</span>
+    <span class="ca-copy-icon" id="caCopyIcon">📋</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card bass-hover">
+        <div class="stat-number" id="statHolders">0</div>
+        <div class="stat-label">Diamond Paws Holders</div>
+      </div>
+      <div class="stat-card bass-hover">
+        <div class="stat-number" id="statMcap">$0</div>
+        <div class="stat-label">Market Cap</div>
+      </div>
+      <div class="stat-card bass-hover">
+        <div class="stat-number" id="statBurned">0%</div>
+        <div class="stat-label">Tokens Burned 🔥</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title glitch-text">What is PanDJ?</h2>
+    <p class="section-subtitle">Ленивый днём, безумный ночью — PanDJ живёт на стыке дзена и рейва 🎋🎧</p>
+    
+    <div class="about-grid">
+      <div class="about-card bass-hover">
+        <span class="about-icon">🎧</span>
+        <h3>Born to Drop</h3>
+        <p>PanDJ не просто мем — это культурный манифест ленивых гениев крипты. Каждый дроп токена синхронизирован с басовым ударом комьюнити.</p>
+      </div>
+      <div class="about-card bass-hover">
+        <span class="about-icon">🎋</span>
+        <h3>Bamboo Economy</h3>
+        <p>Бамбук растёт до метра в день — как и наш чарт. Стейкинг-механика 'Bamboo Farm' позволяет холдерам выращивать свои награды органически.</p>
+      </div>
+      <div class="about-card bass-hover">
+        <span class="about-icon">🔊</span>
+        <h3>Bass-Powered Community</h3>
+        <p>Комьюнити PanDJ — это рейв, где каждый холдер получает VIP-браслет. Еженедельные DJ-сеты в Twitter Spaces и эксклюзивные NFT-дропы для diamond paws.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <div class="container">
+    <h2 class="section-title glitch-text">Tokenomics</h2>
+    <p class="section-subtitle">Total Supply: 1,000,000,000 $PANDROP</p>
+    
+    <div class="tokenomics-wrapper">
+      <div class="chart-container">
+        <div class="donut-chart"></div>
+      </div>
+      <ul class="token-list">
+        <li>
+          <div class="token-dot" style="background: var(--primary)"></div>
+          <span><strong>40%</strong> — Liquidity Pool 🌊</span>
+        </li>
+        <li>
+          <div class="token-dot" style="background: var(--secondary)"></div>
+          <span><strong>30%</strong> — Community Rewards 🎁</span>
+        </li>
+        <li>
+          <div class="token-dot" style="background: #ff6b35"></div>
+          <span><strong>20%</strong> — Bamboo Farm Staking 🎋</span>
+        </li>
+        <li>
+          <div class="token-dot" style="background: #00d4ff"></div>
+          <span><strong>10%</strong> — Development & Marketing 🚀</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <h2 class="section-title glitch-text">Roadmap</h2>
+    <p class="section-subtitle">From Soundcheck to the Main Stage 🎶</p>
+    
+    <div class="roadmap-timeline">
+      <div class="roadmap-item done">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-phase">Phase 1 <span class="roadmap-status status-done">COMPLETE ✓</span></div>
+        <div class="roadmap-title">Soundcheck</div>
+        <ul class="roadmap-list">
+          <li>Запуск токена $PANDROP и листинг на DEX</li>
+          <li>Релиз маскота PanDJ и первых мемов</li>
+          <li>Набор 5000 участников в Telegram-рейв</li>
+        </ul>
+      </div>
+      
+      <div class="roadmap-item active">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-phase">Phase 2 <span class="roadmap-status status-active">ACTIVE 🔴</span></div>
+        <div class="roadmap-title">Opening Set</div>
+        <ul class="roadmap-list">
+          <li>Запуск Bamboo Farm стейкинга</li>
+          <li>Коллаборации с крипто-инфлюенсерами и мем-артистами</li>
+          <li>Первый NFT-дроп 'Red Eye Collection' — 1111 уникальных PanDJ</li>
+        </ul>
+      </div>
+      
+      <div class="roadmap-item upcoming">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-phase">Phase 3 <span class="roadmap-status status-upcoming">UPCOMING</span></div>
+        <div class="roadmap-title">Main Stage</div>
+        <ul class="roadmap-list">
+          <li>Листинг на CEX топ-уровня</li>
+          <li>PanDJ Music DAO — комьюнити голосует за треки и дропы</li>
+          <li>Мерч-линейка худи и наушников с NFC-верификацией</li>
+        </ul>
+      </div>
+      
+      <div class="roadmap-item upcoming">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-phase">Phase 4 <span class="roadmap-status status-upcoming">UPCOMING</span></div>
+        <div class="roadmap-title">After Party</div>
+        <ul class="roadmap-list">
+          <li>Метаверс-клуб 'Bamboo Underground' с живыми сетами</li>
+          <li>Кросс-чейн экспансия и мосты на топ-сети</li>
+          <li>PanDJ Festival — IRL крипто-рейв с холдер-гейтингом</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BUY -->
+<section id="howtobuy">
+  <div class="container">
+    <h2 class="section-title glitch-text">How to Buy</h2>
+    <p class="section-subtitle">Get your $PANDROP in 4 easy steps 🐼</p>
+    
+    <div class="steps-grid">
+      <div class="step-card bass-hover">
+        <div class="step-number">01</div>
+        <span class="step-icon">👛</span>
+        <h3>Create Wallet</h3>
+        <p>Download Phantom or any Solana-compatible wallet. Secure your seed phrase — it's your VIP pass.</p>
+      </div>
+      <div class="step-card bass-hover">
+        <div class="step-number">02</div>
+        <span class="step-icon">💰</span>
+        <h3>Get SOL</h3>
+        <p>Buy SOL from any exchange and transfer it to your wallet. This is your ticket to the rave.</p>
+      </div>
+      <div class="step-card bass-hover">
+        <div class="step-number">03</div>
+        <span class="step-icon">🔄</span>
+        <h3>Go to DEX</h3>
+        <p>Connect your wallet to Raydium or Jupiter. Paste the $PANDROP contract address.</p>
+      </div>
+      <div class="step-card bass-hover">
+        <div class="step-number">04</div>
+        <span class="step-icon">🐼</span>
+        <h3>Swap for $PANDROP</h3>
+        <p>Set slippage to 1-3%, enter amount and swap. Welcome to the Bamboo Underground!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="game-section">
+  <div class="container">
+    <h2 class="section-title glitch-text">Drop the Bass Game</h2>
+    <p class="section-subtitle">Click PanDJ to farm $PANDROP tokens! 🎮</p>
+    
+    <div class="game-area">
+      <div class="game-mascot" id="gameMascot" onclick="clickGame(event)">🐼</div>
+      <div class="game-score">🎵 <span id="gameScore">0</span> $PANDROP</div>
+      <div class="game-level" id="gameLevel">Level 1 — Bamboo Muncher</div>
+      <div class="game-progress-bar">
+        <div class="game-progress-fill" id="gameProgress" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="container">
+    <h2 class="section-title glitch-text">Join the Rave</h2>
+    <p class="section-subtitle">Every holder gets a VIP wristband to the Bamboo Underground 🎋</p>
+    
+    <div class="community-grid">
+      <div class="community-card bass-hover">
+        <span class="community-icon">🐦</span>
+        <h3>Twitter / X</h3>
+        <p>Follow for memes, alpha drops, and weekly DJ-set announcements. The vibes never stop.</p>
+        <a href="#" class="community-btn">Follow Us</a>
+      </div>
+      <div class="community-card bass-hover">
+        <span class="community-icon">✈️</span>
+        <h3>Telegram</h3>
+        <p>Join 5000+ ravers in the most chill yet hype chat in crypto. Diamond paws only.</p>
+        <a href="#" class="community-btn">Join Chat</a>
+      </div>
+      <div class="community-card bass-hover">
+        <span class="community-icon">🚀</span>
+        <h3>Pump.fun</h3>
+        <p>Track the chart, watch the bamboo grow. Live stats and community sentiment.</p>
+        <a href="#" class="community-btn">View Chart</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">🐼 PanDJ — $PANDROP</div>
+  <p>Drop the bamboo, drop the bass. Made with 🎧 by the community, for the community.</p>
+  <div class="footer-disclaimer">
+    <p>⚠️ Disclaimer: $PANDROP is a meme token with no intrinsic value or financial return expectation. This is not financial advice. Always DYOR. Trading crypto involves significant risk of loss. Past performance does not guarantee future results. PanDJ is purely for entertainment purposes. Don't invest more than you can afford to lose.</p>
+  </div>
+  <p style="margin-top: 1.5rem;">© 2024 PanDJ. All rights reserved. Built on vibes and bamboo. 🎋</p>
+</footer>
+
+<script>
+// ============ PARTICLE CANVAS ============
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let mouseX = 0, mouseY = 0;
+let scrollY = 0;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 0.8;
+    this.vy = (Math.random() - 0.5) * 0.8 - 0.3;
+    this.size = Math.random() * 4 + 1;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.type = Math.random() > 0.5 ? 'leaf' : 'note';
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.03;
+    this.life = 1;
+  }
+  
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.rotation += this.rotSpeed;
+    
+    // Mouse interaction
+    const dx = this.x - mouseX;
+    const dy = this.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 150) {
+      this.vx += dx / dist * 0.15;
+      this.vy += dy / dist * 0.15;
+    }
+    
+    // Dampen velocity
+    this.vx *= 0.99;
+    this.vy *= 0.99;
+    
+    if (this.x < -20 || this.x > canvas.width + 20 || this.y < -20 || this.y > canvas.height + 20) {
+      this.reset();
+    }
+  }
+  
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.globalAlpha = this.opacity;
+    
+    if (this.type === 'leaf') {
+      // Bamboo leaf
+      ctx.fillStyle = '#39ff14';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 3, this.size, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = '#39ff14';
+      ctx.shadowBlur = 5;
+    } else {
+      // Music note
+      ctx.fillStyle = '#a832ff';
+      ctx.font = `${this.size * 4}px serif`;
+      ctx.textAlign
+</body></html>
